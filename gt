@@ -19,5 +19,5 @@ paramater = {
     'doctype': 'json', 'version': '1.1', 'q': key,
     }
 r = get(url, params=paramater)
-a = json.loads(r.text)
+a = json.loads(r.text)['basic']
 print(json.dumps(a, ensure_ascii=False, sort_keys=True, indent=4))
