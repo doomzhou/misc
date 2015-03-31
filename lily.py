@@ -9,11 +9,21 @@
 
 import requests
 import sys
-import os
+import imghdr
 
 
-cmd = str(sys.argv[1])
-plaint = os.popen(cmd).read()
-data = {'vimcn': plaint}
-print(data)
-print(requests.post('http://p.vim-cn.com/', data=data).text)
+try:
+    filename = str(sys.argv[1])
+    imghdr.what(filename)
+except Exception as e:
+    plaint = ''
+    for line in sys.stdin:
+        plaint = plaint + line
+
+    data = {'vimcn': plaint}
+    print(requests.post('http://p.vim-cn.com/', data=data).text)
+    sys.exit(0)
+
+
+imgdata = {'name': open(filename, 'rb')}
+print(requests.post('http://img.vim-cn.com/', files=imgdata).text)
