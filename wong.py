@@ -11,8 +11,8 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from datetime import datetime
 from myemail import mailsender
-import sys
 import time
+
 
 def jpfetch(olditem):
     url = '''http://s.jipiao.trip.taobao.com/flight_search_result.htm?tripType=0&\
@@ -28,7 +28,6 @@ def jpfetch(olditem):
     today = int(datetime.strftime(datetime.now(), '%d'))
     item = []
     for i in target:
-        print(i)
         item.append({today: BeautifulSoup(str(i)).text})
         today += 1
     if olditem != item:
