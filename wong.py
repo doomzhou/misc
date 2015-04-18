@@ -11,6 +11,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from datetime import datetime
 from myemail import mailsender
+from mylog import logging
 import time
 
 
@@ -32,9 +33,10 @@ def jpfetch(olditem):
         today += 1
     if olditem != item:
         mailsender(str(item), 'wong@gohjkl.com')
+        logging.warning(str(item))
         return item
     else:
-        print('no change')
+        logging.warning('no change')
         return olditem
 
 if __name__ == '__main__':
