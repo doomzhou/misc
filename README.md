@@ -15,3 +15,11 @@ some python,shell,perl,go script
     vim.png                         #vim screenshoot
     .vimrc                          #old vimrc ,
     flask_celery_example            #flask_celery_example
+    dateintellig.py                 #intelligence datatime 
+    crawl.py                        #抓取 
+    lily.py                         #lily 
+    myemail.pyc                     #mail 
+    mylog.py                        #mylog.py 
+    postlogin.py                    #login 
+    tmp                             #tmp 
+    wong.py                         #ali jipiao
