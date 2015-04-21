@@ -23,3 +23,9 @@ some python,shell,perl,go script
     postlogin.py                    #login 
     tmp                             #tmp 
     wong.py                         #ali jipiao
+    familiarword                    #familiarword
+
+
+require
+====
+pip install autobahn
