@@ -28,4 +28,5 @@ some python,shell,perl,go script
 
 require
 ====
-pip install autobahn
+pip install autobahn            #Socket
+pacman -S community/xsel        #Xselect content
