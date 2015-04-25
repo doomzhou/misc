@@ -10,6 +10,7 @@
 
 import sys
 import math
+from mylog import logging
 
 
 def main(dlist, dwordsum, dlike=0):
@@ -21,7 +22,7 @@ def main(dlist, dwordsum, dlike=0):
                 dlike += 1
         except IndexError:
             pass
-    return dlike / dwordsum
+    return [dlike / dwordsum, dwordsum]
 
 
 def sumord(word, sum=0):
@@ -49,8 +50,12 @@ def judge(dlist):
                 dwordsum
                 )
         except IndexError:
-            dper = 0
-        if math.fabs(ddiffnum) <= 90 and dper > 0.75 and dper != 1:
+            dper = [0, 0]
+        if math.fabs(ddiffnum) <= 90 and\
+                (
+                (dper[1] <= 3 and dper[0] > 0.67) or
+                (dper[1] >= 4 and dper[0] >= 0.75) or
+                dper[0] >= 8) and dper[0] != 1:
             return True
         return False
 
@@ -65,4 +70,5 @@ if __name__ == '__main__':
             for j in range(len(dflist)):
                 if judge([dflist[i], dflist[j]]):
                     print("%s---%s" % (dflist[i], dflist[j]))
+                    logging.warning("%s---%s" % (dflist[i], dflist[j]))
                 pass
