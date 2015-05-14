@@ -21,9 +21,9 @@ except Exception as e:
         plaint = plaint + line
 
     data = {'vimcn': plaint}
-    print(requests.post('http://p.vim-cn.com/', data=data).text)
+    print(requests.post('http://p.vim-cn.com/', data=data).text, end='')
     sys.exit(0)
 
 
 imgdata = {'name': open(filename, 'rb')}
-print(requests.post('http://img.vim-cn.com/', files=imgdata).text)
+print(requests.post('http://img.vim-cn.com/', files=imgdata).text, end='')
