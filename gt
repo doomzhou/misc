@@ -12,7 +12,7 @@ import sys
 import json
 
 
-key = str(sys.argv[1])
+key = ' '.join(sys.argv[1:])
 url = 'http://fanyi.youdao.com/openapi.do'
 paramater = {
     'keyfrom': 'gohjkl', 'key': '1240450357', 'type': 'data',
