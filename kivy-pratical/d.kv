@@ -1,6 +1,7 @@
 #:kivy 1.9.0
 
 <PongGame>:
+    ball: pong_ball
     canvas:
         Rectangle:
             pos: self.center_x - 5, 0
@@ -19,6 +20,7 @@
         text: "10"
 
     PongBall:
+        id: pong_ball
         center: self.parent.center
 
 <PongBall>:
