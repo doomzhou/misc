@@ -4,7 +4,6 @@ from kivy.properties import NumericProperty, ReferenceListProperty,\
         ObjectProperty
 from kivy.vector import Vector
 from kivy.clock import Clock
-from random import randint
 
 
 class PongPaddle(Widget):
@@ -32,7 +31,7 @@ class PongGame(Widget):
         self.ball.move()
         self.player1.bounce_ball(self.ball)
         self.player2.bounce_ball(self.ball)
-        if (self.ball.y < 0) or (self.ball.top > self.height):
+        if (self.ball.y < self.y) or (self.ball.top > self.top):
             self.ball.velocity_y *= -1
         if self.ball.x < self.x:
             self.player2.score += 1
