@@ -21,12 +21,13 @@ def getletter():
 
 
 driver = webdriver.PhantomJS()
-while True:
+for j in range(1, 1000):
     i = getletter() + getletter() + getletter() + getletter()
     url = 'http://wanwang.aliyun.com/domain/searchresult/?keyword=%s&suffix=.com' % i
     time.sleep(1)
     try:
         driver.get(url)
+        print(j, i)
         result = driver.find_element_by_css_selector(
                 cssselector) .get_attribute('innerHTML')
         logging.warning('%s-%s' % (i, result))
