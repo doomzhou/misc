@@ -10,6 +10,7 @@
 
 from selenium import webdriver
 from mylog import logging
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import random
 import time
 
@@ -20,8 +21,15 @@ def getletter():
     return chr(random.randint(0, 26) + 97)
 
 
-driver = webdriver.PhantomJS()
-for j in range(1, 1000):
+user_agent = (
+    "Mozilla/5.0 (Macintosh; Intel Archlinux) " +
+    "AppleWebKit/537.36 (KHTML, like Gecko) Mozilla/5.0 (X11; " +
+    "Linux x86_64;rv:35.0) Gecko/20100101 Firefox/35.0"
+)
+dcap = dict(DesiredCapabilities.PHANTOMJS)
+dcap["phantomjs.page.settings.userAgent"] = user_agent
+driver = webdriver.PhantomJS(desired_capabilities=dcap)
+for j in range(1, 500):
     i = getletter() + getletter() + getletter() + getletter()
     url = 'http://wanwang.aliyun.com/domain/searchresult/?keyword=%s&suffix=.com' % i
     time.sleep(1)
@@ -33,5 +41,5 @@ for j in range(1, 1000):
         logging.warning('%s-%s' % (i, result))
     except Exception as e:
         driver.quit()
-        driver = webdriver.PhantomJS()
+        driver = webdriver.PhantomJS(desired_capabilities=dcap)
         print(e)
