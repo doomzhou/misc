@@ -13,8 +13,6 @@ import urllib.parse
 import logging
 import sys
 
-HOST = '127.0.0.1'
-PORT = 8000         
 logging.basicConfig(level=logging.INFO)
 
 
@@ -36,13 +34,13 @@ def server(host, port):
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     s.bind((host, port))
     s.listen(500)
-    print("Serving at %s" % PORT)
+    logging.info('Server start at %s:%d' % (host, port))
     while 1:
         try:
             conn, addr = s.accept()
-            handle_connection(conn)
+            do_connection(conn)
         except KeyboardInterrupt:
-            print("Bye...")
+            logging.info('Quit')
             break
 
 def parse_header(raw_headers):
@@ -64,7 +62,7 @@ def parse_header(raw_headers):
     return method, version, scm, address, path, params, query, fragment
 
 
-def do_GET(conn, req_headers, address, path, params, query, method, version):
+def GET(conn, req_headers, address, path, params, query, method, version):
     path = urllib.parse.urlunparse(("", "", path, params, query, ""))
     req_headers = " ".join([method, path, version]) + "\r\n" +\
         "\r\n".join(req_headers.split('\r\n')[1:])
@@ -99,7 +97,7 @@ def do_GET(conn, req_headers, address, path, params, query, method, version):
         conn.close()
 
 
-def do_C(conn, req_headers, address):
+def CONNECT(conn, req_headers, address):
     soc = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
         soc.connect(address)
@@ -119,18 +117,20 @@ def do_C(conn, req_headers, address):
             conn.close()
             soc.close()
 
-def handle_connection(conn):
+def do_connection(conn):
     req_headers = to_str(conn.recv(8080))
     if req_headers is None:
         return
     method, version, scm, address, path, params, query, fragment = \
         parse_header(req_headers)
     if method == 'GET':
-        do_GET(conn, req_headers, address, path, params, 
+        GET(conn, req_headers, address, path, params, 
                 query, method, version)
     elif method == 'CONNECT':
         address = (path.split(':')[0], int(path.split(':')[1]))
-        do_C(conn, req_headers, address)
+        CONNECT(conn, req_headers, address)
 
 if __name__ == '__main__':
+    HOST = '127.0.0.1'
+    PORT = 8000         
     server(HOST, PORT)
