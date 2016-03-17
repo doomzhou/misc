@@ -16,14 +16,14 @@ import sys
 logging.basicConfig(level=logging.INFO)
 
 
-def to_bytes(s):
+def to_bytes(s):    ##取自shadowsocks
     if bytes != str:
         if type(s) == str:
             return s.encode('latin-1')
     return s
 
 
-def to_str(s):
+def to_str(s):       ##取自shadowsocks
     if bytes != str:
         if type(s) == bytes:
             return s.decode('latin-1')
