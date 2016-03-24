@@ -12,6 +12,7 @@ import socket
 import urllib.parse
 import logging
 import sys
+import asyncio
 
 logging.basicConfig(level=logging.INFO)
 
@@ -28,6 +29,30 @@ def to_str(s):       ##取自shadowsocks
         if type(s) == bytes:
             return s.decode('latin-1')
     return s
+
+def server1(host, port):
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    s.bind((host, port))
+    s.listen(500)
+    logging.info('Server start at %s:%d' % (host, port))
+
+
+    @asyncio.coroutine
+    def dosth(host, port, loop):
+        conn, addr = yield from asyncio.sock_accept(s)
+        logging.info('Send: Hello world')
+        conn.sendall(to_bytes('hello world'))
+        logging.info('Sended: Hello world')
+
+        logging.info('Receiv: %s')
+        data = yield from conn.recv(100)
+        logging.info('Received: %s' % to_str(data))
+
+        writer.close()
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(dosth(host, port, loop))
+    loop.close()
 
 def server(host, port):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -133,4 +158,4 @@ def do_connection(conn):
 if __name__ == '__main__':
     HOST = '127.0.0.1'
     PORT = 8000         
-    server(HOST, PORT)
+    server1(HOST, PORT)

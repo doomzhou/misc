@@ -3,3 +3,4 @@ tmp/*
 __pycache__/*
 pytools/__pycache__/*
 pytools/*.log
+pytools/tmp/*
