@@ -19,8 +19,8 @@ import re
 from bs4 import BeautifulSoup
 
 proxies = {
-        'http': 'http://123.56.28.196:8888'
-        #'http': 'http://120.52.73.149:8088'
+        #'http': 'http://120.198.231.22:8080'
+        'http': 'http://120.52.73.149:8088'
     }
 headers = {
     'User-Agent': 'Mozilla/5.0\
