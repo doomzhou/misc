@@ -16,7 +16,11 @@ import random
 import json
 import sys
 import re
+import redis
+import imghdr
+from Pydict2Redishash import d2h
 from bs4 import BeautifulSoup
+from urllib import request
 
 proxies = {
         #'http': 'http://120.198.231.22:8080'
@@ -81,5 +85,51 @@ def is_proxy_ok(proxies, s):
     return re.findall(ip, proxies)
 
 
+def save2redis():
+    conn = redis.Redis(host='127.0.0.1')
+    dictname = "gugudict"
+    storedict = {}
+    item = []
+    with open('tmp/gugu.t') as f:
+        for line in f:
+            try:
+                (k, v) = line.split()
+                storedict[k] = v
+            except ValueError:
+                item.append(line)
+    d2h(conn, dictname, storedict) 
+    conn.lpush('faild', *item)
+    pass
+
+def saveimg():
+    conn = redis.StrictRedis(host='127.0.0.1')  
+    keylist = conn.hkeys('gugudict')
+    k = 0 
+    for i in keylist:
+        if k >= 5:
+            print('five times failed, quit')
+            break
+        try:
+            value = conn.hget('gugudict', i).decode()
+            url = "http://gu-gu.com%s" % value
+            filename = "tmp/%s-%s" % (value.split("/")[2], value.split("/")[3])
+            request.urlretrieve(url, filename)
+            conn.hdel('gugudict', i)
+            k = 0           #当有try 成功就把k设置成0
+        except Exception as e:
+            k += 1
+            print("%s:%s" % (i.decode(), e))
+            conn.rpush('imgsavefaildlist', "%s:%s" % (i.decode(), e))
+    print('current keylist is %s' % i.decode())
+    pass
+
+
 if __name__ == '__main__':
-    main()
+    if len(sys.argv[1:]) == 0:
+        print('main out of date')
+        pass
+        #main()
+    elif sys.argv[1] == "s2r":
+        save2redis()
+    elif sys.argv[1] == "saveimg":
+        saveimg()
