@@ -13,28 +13,113 @@ requirement:
 
 
 import os
-from tkinter import  Text, Button, Tk, INSERT
-
-root = Tk()
-
-def call():
-    tv = text.get("1.0", 'end-1c')
-    os.system("%s &" % tv)
-    root.quit()
-
-text = Text(root , height = 2, width = 30)
-text.focus_force()
+#from tkinter import  Text, Button, Tk, INSERT
+from tkinter import *
 
 
-button = Button(root, height=2,command=call, width=20,text="Submit")
-text.bind('<Return>', lambda e: call())
-root.bind('<Escape>', lambda e: root.quit())
+class AutocompleteEntry(Entry):
+    def __init__(self, lista, *args, **kwargs):
+        
+        Entry.__init__(self, *args, **kwargs)
+        self.lista = lista        
+        self.var = self["textvariable"]
+        if self.var == '':
+            self.var = self["textvariable"] = StringVar()
 
-text.pack()
-button.pack()
+        self.var.trace('w', self.changed)
+        self.bind("<Right>", self.selection)
+        self.bind("<Up>", self.up)
+        self.bind("<Down>", self.down)
+        
+        self.lb_up = False
 
-root.mainloop()
+    def changed(self, name, index, mode):  
+        
+        print('changed')
+
+        if self.var.get() == '':
+            self.lb.destroy()
+            self.lb_up = False
+        else:
+            words = self.comparison()
+            if words:            
+                if not self.lb_up:
+                    self.lb = Listbox()
+                    self.lb.bind("<Double-Button-1>", self.selection)
+                    self.lb.bind("<Right>", self.selection)
+                    self.lb.place(x=self.winfo_x(), y=self.winfo_y()+self.winfo_height())
+                    self.lb_up = True
+                
+                self.lb.delete(0, END)
+                for w in words:
+                    self.lb.insert(END,w)
+            else:
+                if self.lb_up:
+                    self.lb.destroy()
+                    self.lb_up = False
+        
+    def selection(self, event):
+
+        print('selection')
+        if self.lb_up:
+            self.var.set(self.lb.get(ACTIVE))
+            self.lb.destroy()
+            self.lb_up = False
+            self.icursor(END)
+
+    def up(self, event):
+
+        print('up')
+        if self.lb_up:
+            if self.lb.curselection() == ():
+                index = '0'
+            else:
+                index = self.lb.curselection()[0]
+            if index != '0':                
+                self.lb.selection_clear(first=index)
+                index = str(int(index)-1)                
+                self.lb.selection_set(first=index)
+                self.lb.activate(index) 
+
+    def down(self, event):
+
+        print('down')
+        if self.lb_up:
+            if self.lb.curselection() == ():
+                index = '0'
+            else:
+                index = self.lb.curselection()[0]
+            if index != END:                        
+                self.lb.selection_clear(first=index)
+                index = str(int(index)+1)        
+                self.lb.selection_set(first=index)
+                self.lb.activate(index) 
+
+    def comparison(self):
+
+        print('comparison')
+        pattern = re.compile('.*' + self.var.get() + '.*')
+        return [w for w in self.lista if re.match(pattern, w)]
+
+
 
 
 if __name__ == '__main__':
-    pass
+    lista = ['feh', 'google-chrome-stable', 'google-chrome-unstable', 'gimp', 'firefox',
+            'burpsuite', 'wireshark', 'jmeter', 'freemind', 'XMind', 'okular', 'termite']
+    def call():
+        tv = entry.get()
+        os.system("%s &" % tv)
+        root.quit()
+    root = Tk()
+
+    entry = AutocompleteEntry(lista, root)
+    entry.grid(row=0, column=0)
+    Button(root, height=2,command=call, width=20,text="Submit").grid(row=3, column=0)
+
+    entry.focus_force()
+    entry.bind('<Return>', lambda e: call())
+    root.bind('<Escape>', lambda e: root.quit())
+    
+
+    root.mainloop()
