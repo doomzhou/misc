@@ -39,7 +39,8 @@ def image():
             conn.hset('img',filename, stream)
             #return redirect(url_for('upload_file',
             #                        filename=filename))
-            return '%s?filename=%s' % (request.url, filename)
+            return '%s://%s%s?filename=%s' % (request.headers['Scheme'],
+                request.headers['Host'], request.path, filename)
     filename = request.args.get('filename')
     if filename:
         conn = redis.StrictRedis(host='127.0.0.1')  
@@ -50,7 +51,7 @@ def image():
             return jsonify({"status": 1, "msg": "Error"})
     return '''
 <!doctype html>
-<title>Upload new File</title>
+<title>图片中心</title>
 <h1>Upload new File</h1>
 <form action="" method=post enctype=multipart/form-data>
 <p><input type=file name=data>
@@ -66,7 +67,8 @@ def paster():
         if text:
             pastername  = "%d-%d" % (int(time.time() * 1000), int(random() * 1000))
             conn.hset('pas', pastername, text)
-            return '%s?pastername=%s' % (request.url, pastername)
+            return '%s://%s%s?pastername=%s' % (request.headers['Scheme'],
+                request.headers['Host'], request.path, pastername)
     pastername = request.args.get('pastername')
     if pastername:
         conn = redis.StrictRedis(host='127.0.0.1')  
@@ -80,7 +82,7 @@ def paster():
     <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title></title>
+        <title>代码粘贴中心</title>
     </head>
     <body>
         <form action="" method=post enctype=multipart/form-data>
