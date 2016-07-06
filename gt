@@ -10,9 +10,15 @@
 from requests import get
 import sys
 import json
+import re
 
 
 key = ' '.join(sys.argv[1:])
+if re.match(r'^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$', key):
+    url = 'http://ipinfo.io/%s' % key
+    r = get(url)
+    print(r.text)
+    sys.exit(2)
 url = 'http://fanyi.youdao.com/openapi.do'
 paramater = {
     'keyfrom': 'gohjkl', 'key': '1240450357', 'type': 'data',
